@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Electro Centro - Tu tienda de electrodomésticos</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    /* --- CSS EMBEBIDO --- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background-color: #f9f9f9;
+    }
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 15px;
+    }
+
+    header {
+      background-color: #000;
+      color: white;
+      padding: 15px 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    header .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .logo h1 {
+      font-size: 24px;
+      font-weight: bold;
+    }
+    nav ul {
+      display: flex;
+      list-style: none;
+      margin: 10px 0;
+    }
+    nav ul li {
+      margin: 0 10px;
+    }
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+    nav ul li a:hover {
+      color: #00a8ff;
+    }
+    .header-icons a {
+      color: white;
+      margin-left: 15px;
+      font-size: 18px;
+      text-decoration: none;
+    }
+
+    .search-bar {
+      display: flex;
+      align-items: center;
+      margin: 10px 0;
+    }
+    .search-bar input {
+      padding: 8px 12px;
+      border: none;
+      border-radius: 4px 0 0 4px;
+      width: 180px;
+    }
+    .search-bar button {
+      background: #00a8ff;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 0 4px 4px 0;
+      cursor: pointer;
+    }
+
+    #cart-icon {
+      position: relative;
+      color: white;
+      text-decoration: none;
+    }
+    #cart-count {
+      position: absolute;
+      top: -8px;
+      right: -10px;
+      background: #e63946;
+      color: white;
+      font-size: 12px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #cart-sidebar {
+      position: fixed;
+      top: 0;
+      right: -400px;
+      width: 350px;
+      height: 100vh;
+      background: white;
+      box-shadow: -2px 0 10px rgba(0,0,0,0.2);
+      z-index: 2000;
+      transition: right 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    .cart-visible {
+      right: 0 !important;
+    }
+    .cart-hidden {
+      right: -400px !important;
+    }
+    .cart-header {
+      padding: 15px 20px;
+      background: #000;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .cart-header button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+    }
+    #cart-items {
+      padding: 20px;
+      flex: 1;
+      overflow-y: auto;
+    }
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+    }
+    .cart-item button {
+      background: #e63946;
+      color: white;
+      border: none;
+      padding: 3px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .cart-footer {
+      padding: 20px;
+      border-top: 1px solid #eee;
+      text-align: center;
+    }
+    .btn-pagar {
+      display: inline-block;
+      background: #00a8ff;
+      color: white;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      margin: 10px 0;
+      font-weight: bold;
+    }
+    .small {
+      font-size: 12px;
+      color: #666;
+    }
+
+    .hero {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      height: 300px;
+    }
+    .slider {
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+      height: 100%;
+    }
+    .slide {
+      min-width: 100%;
+      display: none;
+    }
+    .slide.active {
+      display: block;
+    }
+    .slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .prev, .next {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0,0,0,0.5);
+      color: white;
+      border: none;
+      font-size: 24px;
+      padding: 10px;
+      cursor: pointer;
+      z-index: 10;
+    }
+    .prev { left: 10px; }
+    .next { right: 10px; }
+
+    section {
+      padding: 40px 0;
+    }
+    section h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 28px;
+      color: #000;
+    }
+
+    .grid-productos {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 30px;
+    }
+    .producto {
+      background: white;
+      padding: 15px;
+      text-align: center;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .producto img {
+      width: 100%;
+      height: 200px;
+      object-fit: contain;
+      margin-bottom: 15px;
+    }
+    .precio {
+      color: #e63946;
+      font-size: 20px;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+    button {
+      background: #00a8ff;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      background: #0077b6;
+    }
+
+    .grid-marcas {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 30px;
+    }
+    .grid-marcas img {
+      height: 60px;
+      object-fit: contain;
+      filter: grayscale(100%);
+      transition: filter 0.3s;
+    }
+    .grid-marcas img:hover {
+      filter: grayscale(0%);
+    }
+
+    .grid-sucursales {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+    .sucursal {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      width: 300px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .contacto-contenido {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+      justify-content: center;
+    }
+    .contacto-info {
+      text-align: center;
+    }
+    .contacto-info p {
+      margin: 10px 0;
+      font-size: 18px;
+    }
+    .redes {
+      margin-top: 15px;
+    }
+    .redes a {
+      color: #00a8ff;
+      font-size: 24px;
+      margin: 0 10px;
+      text-decoration: none;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 400px;
+    }
+    form input, form textarea {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    form textarea {
+      height: 100px;
+    }
+
+    footer {
+      background: #333;
+      color: white;
+      text-align: center;
+      padding: 20px 0;
+      margin-top: 40px;
+    }
+
+    .whatsapp-float {
+      position: fixed;
+      width: 60px;
+      height: 60px;
+      bottom: 40px;
+      right: 20px;
+      background: #25d366;
+      color: white;
+      border-radius: 50px;
+      text-align: center;
+      font-size: 30px;
+      box-shadow: 2px 2px 10px #888;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+    }
+
+    @media (max-width: 768px) {
+      .hero { height: 200px; }
+      .search-bar input { width: 120px; }
+      #cart-sidebar { width: 300px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="container">
+      <div class="logo">
+        <h1>Electro Centro</h1>
+      </div>
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Buscar productos...">
+        <button onclick="buscarProductos()"><i class="fas fa-search"></i></button>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="#inicio">Inicio</a></li>
+          <li><a href="#productos">Productos</a></li>
+          <li><a href="#marcas">Marcas</a></li>
+          <li><a href="#sucursales">Sucursales</a></li>
+          <li><a href="#contacto">Contacto</a></li>
+        </ul>
+      </nav>
+      <div class="header-icons">
+        <a href="#" id="cart-icon" onclick="toggleCart()">
+          <i class="fas fa-shopping-cart"></i>
+          <span id="cart-count">0</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Carrito -->
+  <div id="cart-sidebar" class="cart-hidden">
+    <div class="cart-header">
+      <h3>🛒 Tu Carrito</h3>
+      <button onclick="toggleCart()">&times;</button>
+    </div>
+    <div id="cart-items"></div>
+    <div class="cart-footer">
+      <p>Total: <span id="cart-total">$0</span></p>
+      <a href="https://www.mercadopago.com.ar" target="_blank" class="btn-pagar">Pagar con Mercado Pago</a>
+      <p class="small">*O contactanos por WhatsApp para coordinar envío</p>
+    </div>
+  </div>
+
+  <!-- Banner -->
+  <section id="inicio" class="hero">
+    <div class="slider">
+      <div class="slide active">
+        <img src="https://via.placeholder.com/1200x400?text=OFERTAS+DE+VERANO+HASTA+40%25+OFF" alt="Oferta 1">
+      </div>
+      <div class="slide">
+        <img src="https://via.placeholder.com/1200x400?text=NUEVOS+SMART+TV+4K+EN+STOCK" alt="Oferta 2">
+      </div>
+      <div class="slide">
+        <img src="https://via.placeholder.com/1200x400?text=ENVÍOS+A+TODO+EL+PAÍS+%2B+GARANTÍA" alt="Oferta 3">
+      </div>
+    </div>
+    <button class="prev" onclick="moveSlide(-1)">&#10094;</button>
+    <button class="next" onclick="moveSlide(1)">&#10095;</button>
+  </section>
+
+  <!-- Productos -->
+  <section id="productos" class="productos">
+    <div class="container">
+      <h2>Productos Destacados</h2>
+      <div class="grid-productos" id="productos-container"></div>
+    </div>
+  </section>
+
+  <!-- Marcas -->
+  <section id="marcas" class="marcas">
+    <div class="container">
+      <h2>Marcas Destacadas</h2>
+      <div class="grid-marcas">
+        <img src="https://via.placeholder.com/120x60?text=Samsung" alt="Samsung">
+        <img src="https://via.placeholder.com/120x60?text=LG" alt="LG">
+        <img src="https://via.placeholder.com/120x60?text=Philips" alt="Philips">
+        <img src="https://via.placeholder.com/120x60?text=Whirlpool" alt="Whirlpool">
+        <img src="https://via.placeholder.com/120x60?text=Motorola" alt="Motorola">
+        <img src="https://via.placeholder.com/120x60?text=Sony" alt="Sony">
+      </div>
+    </div>
+  </section>
+
+  <!-- Sucursales -->
+  <section id="sucursales" class="sucursales">
+    <div class="container">
+      <h2>Nuestras Sucursales</h2>
+      <div class="grid-sucursales">
+        <div class="sucursal">
+          <h3>Córdoba Centro</h3>
+          <p>📍 Av. Colón 1234</p>
+          <p>📞 (0351) 456-7890</p>
+          <p>🕒 Lunes a Sábado: 9 a 20 hs</p>
+        </div>
+        <div class="sucursal">
+          <h3>Alta Córdoba</h3>
+          <p>📍 Bv. Los Alemanes 5678</p>
+          <p>📞 (0351) 123-4567</p>
+          <p>🕒 Lunes a Sábado: 9 a 20 hs</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contacto -->
+  <section id="contacto" class="contacto">
+    <div class="container">
+      <h2>Contáctanos</h2>
+      <div class="contacto-contenido">
+        <div class="contacto-info">
+          <p><i class="fas fa-envelope"></i> info@electrocentro.com.ar</p>
+          <p><i class="fas fa-phone"></i> (0351) 123-4567</p>
+          <p><i class="fab fa-whatsapp"></i> <a href="https://wa.me/543511234567" target="_blank" style="color:#25D366;text-decoration:none">+54 9 351 123-4567</a></p>
+          <div class="redes">
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+        <form id="contactForm">
+          <input type="text" placeholder="Nombre" required>
+          <input type="email" placeholder="Email" required>
+          <textarea placeholder="Mensaje" required></textarea>
+          <button type="submit">Enviar</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- WhatsApp flotante -->
+  <a href="https://wa.me/543511234567" class="whatsapp-float" target="_blank">
+    <i class="fab fa-whatsapp"></i>
+  </a>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 Electro Centro. Todos los derechos reservados.</p>
+      <p>Dirección: Av. Colón 1234, Córdoba, Argentina</p>
+      <p>CUIT: 30-12345678-9 | Inscripto en AFIP</p>
+    </div>
+  </footer>
+
+  <!-- JavaScript embebido -->
+  <script>
+    // Productos
+    const productos = [
+      { id: 1, nombre: "Smart TV 55\" 4K", precio: 249999, img: "https://via.placeholder.com/250x250?text=Smart+TV+55%22" },
+      { id: 2, nombre: "Heladera Doble Puerta", precio: 389000, img: "https://via.placeholder.com/250x250?text=Heladera" },
+      { id: 3, nombre: "Aire Acondicionado 3500 Fr", precio: 420000, img: "https://via.placeholder.com/250x250?text=Aire" },
+      { id: 4, nombre: "Motorola G84", precio: 189999, img: "https://via.placeholder.com/250x250?text=Motorola+G84" }
+    ];
+
+    let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+
+    function renderProductos(lista = productos) {
+      const contenedor = document.getElementById('productos-container');
+      contenedor.innerHTML = lista.map(p => `
+        <div class="producto">
+          <img src="${p.img}" alt="${p.nombre}">
+          <h3>${p.nombre}</h3>
+          <p class="precio">$${p.precio.toLocaleString('es-AR')}</p>
+          <button onclick="agregarAlCarrito(${p.id})">Agregar al carrito</button>
+        </div>
+      `).join('');
+    }
+
+    function agregarAlCarrito(id) {
+      const producto = productos.find(p => p.id === id);
+      if (producto) {
+        carrito.push(producto);
+        localStorage.setItem('carrito', JSON.stringify(carrito));
+        actualizarCarrito();
+        alert(`"${producto.nombre}" agregado al carrito`);
+      }
+    }
+
+    function actualizarCarrito() {
+      document.getElementById('cart-count').textContent = carrito.length;
+      const total = carrito.reduce((sum, item) => sum + item.precio, 0);
+      document.getElementById('cart-total').textContent = `$${total.toLocaleString('es-AR')}`;
+
+      const itemsElement = document.getElementById('cart-items');
+      if (carrito.length === 0) {
+        itemsElement.innerHTML = '<p>Tu carrito está vacío</p>';
+      } else {
+        itemsElement.innerHTML = carrito.map((item, index) => `
+          <div class="cart-item">
+            <div><strong>${item.nombre}</strong><br>$${item.precio.toLocaleString('es-AR')}</div>
+            <button onclick="eliminarDelCarrito(${index})">×</button>
+          </div>
+        `).join('');
+      }
+    }
+
+    function eliminarDelCarrito(index) {
+      carrito.splice(index, 1);
+      localStorage.setItem('carrito', JSON.stringify(carrito));
+      actualizarCarrito();
+    }
+
+    function toggleCart() {
+      const cart = document.getElementById('cart-sidebar');
+      cart.classList.toggle('cart-visible');
+      cart.classList.toggle('cart-hidden');
+    }
+
+    function buscarProductos() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const resultados = query ? productos.filter(p => p.nombre.toLowerCase().includes(query)) : productos;
+      renderProductos(resultados);
+    }
+
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('¡Gracias por tu mensaje! Nos pondremos en contacto pronto.');
+      this.reset();
+    });
+
+    // Slider
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    function showSlide(n) {
+      slides.forEach((slide, index) => slide.classList.remove('active'));
+      currentSlide = (n + slides.length) % slides.length;
+      slides[currentSlide].classList.add('active');
+    }
+    function moveSlide(direction) { showSlide(currentSlide + direction); }
+    setInterval(() => moveSlide(1), 5000);
+
+    // Iniciar
+    document.addEventListener('DOMContentLoaded', () => {
+      renderProductos();
+      actualizarCarrito();
+    });
+  </script>
+</body>
+</html>
